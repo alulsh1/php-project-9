@@ -4,6 +4,7 @@
 require __DIR__ . '/../vendor/autoload.php';
 
 use Slim\Factory\AppFactory;
+use Slim\Views\PhpRenderer;
 
 $app = AppFactory::create();
 $app->addErrorMiddleware(true, true, true);
@@ -11,7 +12,11 @@ $app->addErrorMiddleware(true, true, true);
 $app->get('/', function ($request, $response) {
     $response->getBody()->write('Welcome to Slim!');
     return $response;
-    // Ѕлагодар€ пакету slim/http этот же код можно записать короче
-    // return $response->write('Welcome to Slim!');
 });
+
+$app->get('/hello', function ($request, $response) {
+    $renderer = new PhpRenderer('public/templates');
+    return $renderer->render($response, "nav.php");
+});
+
 $app->run();
