@@ -1,7 +1,7 @@
 <?php
 
 // Подключение автозагрузки через composer
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . "/../vendor/autoload.php";
 
 use Slim\Factory\AppFactory;
 use Slim\Views\PhpRenderer;
@@ -9,14 +9,14 @@ use Slim\Views\PhpRenderer;
 $app = AppFactory::create();
 $app->addErrorMiddleware(true, true, true);
 
-$app->get('/', function ($request, $response) {
-    $response->getBody()->write('Welcome to Slim!');
+$app->get("/", function ($request, $response) {
+    $response->getBody()->write("Welcome to Slim!");
     return $response;
 });
 
-$app->get('/hello', function ($request, $response) {
-    $renderer = new PhpRenderer('public/templates');
-    return $renderer->render($response, "nav.php");
+$app->get("/hello", function ($request, $response) {
+    $renderer = new PhpRenderer("public/templates");
+    return $renderer->render($response, "nav.phtml");
 });
 
 $app->run();
