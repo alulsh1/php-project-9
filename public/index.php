@@ -42,7 +42,7 @@ try {
 
 $container = new Container();
 $container->set("renderer", function () {
-    return new PhpRenderer("public/templates");
+    return new PhpRenderer(__DIR__ . '/templates');
 });
 
 $container->set("flash", function () {
