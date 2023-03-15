@@ -16,15 +16,15 @@ class PostgreSQLCreateTable
         $sql = 'CREATE TABLE IF NOT EXISTS urls (
                    id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
                    name character varying(255),
-				   created_at timestamp default current_timestamp
+				   created_at timestamp
         );
 				CREATE TABLE IF NOT EXISTS url_checks (
 				id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY, 
 				url_id bigint REFERENCES urls (id),
 				status_code integer, 
-				h1 character varying(255), 
-				title character varying(255), 
-				description character varying(255), 
+				h1 character varying(1000), 
+				title text, 
+				description text, 
 				created_at timestamp				
 		);	
 		';
@@ -52,12 +52,15 @@ class PostgreSQLCreateTable
 	return $this;
 	}
 	
-	public function addUrl($url)
-{
-    $sql = 'INSERT INTO urls (name) VALUES (:url)';
+	public function addUrl($url){
+	$sql = 'INSERT INTO urls 
+	(name, created_at) 
+	VALUES (:url, :created_at)';
+	
     $stmt = $this->pdo->prepare($sql);
 
-    $stmt->bindValue(':url', $url);
+    $stmt->bindValue(':url', $url['name']);
+	$stmt->bindValue(':created_at', $url['created_at']);
 
     $stmt->execute();
     return $this->pdo->lastInsertId('urls_id_seq');

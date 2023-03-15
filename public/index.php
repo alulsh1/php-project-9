@@ -93,7 +93,7 @@ $app->get("/urls/{id}", function ($request, $response, $args) use ($pdo) {
     $id = $args["id"];
     $tableadd = new PostgreSQLCreateTable($pdo);
     $url = $tableadd->getUrl($id);
-    $url["created_at"] = substr($url["created_at"], 0, 19);
+
     $messages = $this->get("flash")->getMessages();
 
     $chekingsUrl = $tableadd->getCheckForCurrentUrl($id);
@@ -130,10 +130,11 @@ $app->post("/urls", function ($request, $response) use ($pdo, $router) {
     if ($validator->validate()) {
         $domen = parse_url($urlData["url"]["name"]); //нормализация url
         $urlData["url"]["name"] = $domen["scheme"] . "://" . $domen["host"];
-
+        $dataNow = Carbon::now();
+        $urlData["url"]["created_at"] = $dataNow->toDateTimeString();
         $findUrl = $tableUrls->seorchUrlName($urlData["url"]["name"]); // поиск в базе url
         if (!is_array($findUrl)) {
-            $tables = $tableUrls->addUrl($urlData["url"]["name"]); // добавляем в базу
+            $tables = $tableUrls->addUrl($urlData["url"]); // добавляем в базу
             $lastUrl = $tableUrls->getLastUrl(); // ищем последнюю добавленную запись
             $url = $routeParser->urlFor("urls.show", ["id" => $lastUrl["id"]]);
             $this->get("flash")->addMessage(
@@ -182,17 +183,15 @@ $app->post("/urls/{url_id}/checks", function ($request, $response, $args) use ($
             "description" => $desc->getAttribute("content"),
             "status_code" => $response->getStatusCode(),
         ];
-    } catch (TransferException $e) {
-        $this->get("flash")->addMessage(
-            "failure",
-            "Произошла ошибка при проверке, не удалось подключиться"
-        );
-    }
-    if (isset($data["status_code"])) {
         $tableUrls->addChek($data);
         $this->get("flash")->addMessage(
             "successchek",
             "Страница успешно проверена"
+        );
+    } catch (TransferException $e) {
+        $this->get("flash")->addMessage(
+            "failure",
+            "Произошла ошибка при проверке, не удалось подключиться"
         );
     }
 
