@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Install	
+      - name: Install
         run: make install
       - name: Run linter
         run: make lint
