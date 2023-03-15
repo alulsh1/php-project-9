@@ -4,7 +4,6 @@ namespace Hexlet\Code\Misc;
 
 function tableExists(\PDO $pdo, string $table)
 {
-
     // Try a select statement against the table
     // Run it in try-catch in case PDO is in ERRMODE_EXCEPTION.
     try {
