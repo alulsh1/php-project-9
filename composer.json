@@ -21,7 +21,6 @@
         "slim/http": "^0.4.0",
         "slim/php-view": "^3.2",
         "php-di/php-di": "^7.0",
-        "twbs/bootstrap": "5.3.0-alpha1",
         "nesbot/carbon": "*",
         "vlucas/valitron": "*",
         "slim/flash": "*",
