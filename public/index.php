@@ -22,26 +22,15 @@ session_start();
 
 if (!isset($_SESSION["start"])) {
     $pdo = Connection::get()->connect();
-    if (Misc\tableExists($pdo, "url_checks")) {
         $tableCreator = new PostgreSQLCreateTable($pdo);
         $tableCreator->deleteAllTable();
-    }
-    $_SESSION["start"] = true;
 }
 
-if (PHP_SAPI === "cli-server" && $_SERVER["SCRIPT_FILENAME"] !== __FILE__) {
-    return false;
-}
 
-try {
     $pdo = Connection::get()->connect();
-    if (!Misc\tableExists($pdo, "urls")) {
-        $tableCreator = new PostgreSQLCreateTable($pdo);
-        $tableCreator->createTables();
-    }
-} catch (\PDOException $e) {
-    echo $e->getMessage();
-}
+    $tableCreator = new PostgreSQLCreateTable($pdo);
+    $tableCreator->createTables();
+
 
 $container = new Container();
 $container->set("renderer", function () {
