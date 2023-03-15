@@ -42,7 +42,7 @@ try {
 
 $container = new Container();
 $container->set("renderer", function () {
-    return new PhpRenderer(__DIR__ . '/templates');
+    return new PhpRenderer(__DIR__ . "/templates");
 });
 
 $container->set("flash", function () {
@@ -90,7 +90,10 @@ $app->get("/urls/{id}", function ($request, $response, $args) {
     $pdo = Connection::get()->connect();
     $id = $args["id"];
     $tableadd = new PostgreSQLCreateTable($pdo);
-    $url = $tableadd->getUrl($id);
+
+    $sql = "SELECT * FROM urls WHERE id = {$id};";
+    $stmt = $pdo->query($sql)->fetch(\PDO::FETCH_ASSOC);
+    $url = $stmt;
 
     $messages = $this->get("flash")->getMessages();
 
@@ -131,10 +134,18 @@ $app->post("/urls", function ($request, $response) {
         $urlData["url"]["name"] = $domen["scheme"] . "://" . $domen["host"];
         $dataNow = Carbon::now();
         $urlData["url"]["created_at"] = $dataNow->toDateTimeString();
-        $findUrl = $tableUrls->seorchUrlName($urlData["url"]["name"]); // поиск в базе url
+
+        $sql = "SELECT * FROM urls WHERE name = '{$urlData["url"]["name"]}';";
+        $stmt = $pdo->query($sql)->fetch(\PDO::FETCH_ASSOC);
+
+        $findUrl = $stmt; // поиск в базе url
         if (!is_array($findUrl)) {
             $tables = $tableUrls->addUrl($urlData["url"]); // добавляем в базу
-            $lastUrl = $tableUrls->getLastUrl(); // ищем последнюю добавленную запись
+
+            $sql = "SELECT * FROM urls ORDER BY id DESC, id DESC LIMIT 1;";
+            $stmt = $pdo->query($sql)->fetch(\PDO::FETCH_ASSOC);
+            $lastUrl = $stmt; // ищем последнюю добавленную запись
+
             $url = $routeParser->urlFor("urls.show", ["id" => $lastUrl["id"]]);
             $this->get("flash")->addMessage(
                 "success",
@@ -163,7 +174,10 @@ $app->post("/urls", function ($request, $response) {
 $app->post("/urls/{url_id}/checks", function ($request, $response, $args) {
     $pdo = Connection::get()->connect();
     $tableUrls = new PostgreSQLCreateTable($pdo);
-    $url = $tableUrls->getUrl($args["url_id"])["name"];
+
+    $sql = "SELECT * FROM urls WHERE id = {$args["url_id"]};";
+    $stmt = $pdo->query($sql)->fetch(\PDO::FETCH_ASSOC);
+    $url = $stmt["name"];
 
     try {
         $client = new Client(["base_uri" => $url, "verify" => false]);

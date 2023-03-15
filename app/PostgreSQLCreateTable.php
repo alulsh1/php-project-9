@@ -34,7 +34,7 @@ class PostgreSQLCreateTable
         return $this;
     }
 
-   /* public function deleteTable($table)
+    /* public function deleteTable($table)
     {
         $sql = "DROP TABLE {$table};";
         $this->pdo->exec($sql);
@@ -75,20 +75,20 @@ class PostgreSQLCreateTable
         return $result;
     }
 
-    public function getLastUrl()
+    /*  public function getLastUrl()
     {
         $sql = "SELECT * FROM urls ORDER BY id DESC, id DESC LIMIT 1;";
         $stmt = $this->pdo->query($sql);
         return $stmt->fetch(\PDO::FETCH_ASSOC);
-    }
+    }*/
 
-    public function getUrl(int $id)
+    /*  public function getUrl(int $id)
     {
         $sql = "SELECT * FROM urls WHERE id = {$id};";
         $stmt = $this->pdo->query($sql);
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         return $result;
-    }
+    } */
     public function seorchUrlName(string $name)
     {
         $sql = "SELECT * FROM urls WHERE name = '{$name}';";
