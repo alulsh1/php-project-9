@@ -94,15 +94,15 @@ class PostgreSQLCreateTable
 	}
 	public function addChek($data){
 	$sql = 'INSERT INTO url_checks 
-	(url_id, created_at,status_code, h1, title, description) 
-	VALUES (:url_id, :created_at, :status_code, :h1, :title, :description)';
+	(url_id, created_at, h1, title, description,status_code) 
+	VALUES (:url_id, :created_at,:h1, :title, :description,:status_code)';
 	$stmt = $this->pdo->prepare($sql);
     $stmt->bindValue(':url_id', $data['url_id']);
 	$stmt->bindValue(':created_at', $data['created_at']);
-	$stmt->bindValue(':status_code', $data['status_code']);
 	$stmt->bindValue(':h1', $data['h1']);
 	$stmt->bindValue(':title', $data['title']);
 	$stmt->bindValue(':description', $data['description']);
+	$stmt->bindValue(':status_code', $data['status_code']);
     $stmt->execute();
 	}
 	

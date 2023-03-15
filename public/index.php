@@ -22,15 +22,23 @@ session_start();
 
 if (!isset($_SESSION["start"])) {
     $pdo = Connection::get()->connect();
+
+    if (Misc\tableExists($pdo, "urls")) {
         $tableCreator = new PostgreSQLCreateTable($pdo);
-        $tableCreator->deleteAllTable();
+        $tableCreator->createTables();
+    }
+    $_SESSION["start"] = true;
 }
 
-
+try {
     $pdo = Connection::get()->connect();
-    $tableCreator = new PostgreSQLCreateTable($pdo);
-    $tableCreator->createTables();
-
+    if (!Misc\tableExists($pdo, "urls")) {
+        $tableCreator = new PostgreSQLCreateTable($pdo);
+        $tableCreator->deleteAllTable();
+    }
+} catch (\PDOException $e) {
+    echo $e->getMessage();
+}
 
 $container = new Container();
 $container->set("renderer", function () {
@@ -169,7 +177,7 @@ $app->post("/urls/{url_id}/checks", function ($request, $response, $args) use ($
             "created_at" => $dataNow->toDateTimeString(),
             "h1" => $h1->text(),
             "title" => $title->text(),
-            "description" => $desc->getAttribute("content"),
+            "description" => $desc->getAttribute("content") ?? "",
             "status_code" => $response->getStatusCode(),
         ];
         $tableUrls->addChek($data);
