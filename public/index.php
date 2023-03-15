@@ -51,10 +51,10 @@ $container->set("flash", function () {
 
 $app = AppFactory::createFromContainer($container);
 $app->addErrorMiddleware(true, true, true);
-$router = $app->getRouteCollector()->getRouteParser();
 
 // INDEX
-$app->get("/urls", function ($request, $response) use ($pdo) {
+$app->get("/urls", function ($request, $response) {
+    $pdo = Connection::get()->connect();
     $tableadd = new PostgreSQLCreateTable($pdo);
     $usrls = $tableadd->getUrls();
 
@@ -86,7 +86,8 @@ $app->get("/", function ($request, $response) {
 })->setName("urls.nav");
 
 // SHOW
-$app->get("/urls/{id}", function ($request, $response, $args) use ($pdo) {
+$app->get("/urls/{id}", function ($request, $response, $args) {
+    $pdo = Connection::get()->connect();
     $id = $args["id"];
     $tableadd = new PostgreSQLCreateTable($pdo);
     $url = $tableadd->getUrl($id);
@@ -108,7 +109,8 @@ $app->get("/urls/{id}", function ($request, $response, $args) use ($pdo) {
 })->setName("urls.show");
 
 // POST
-$app->post("/urls", function ($request, $response) use ($pdo, $router) {
+$app->post("/urls", function ($request, $response) {
+    $pdo = Connection::get()->connect();
     $tableUrls = new PostgreSQLCreateTable($pdo);
     $routeParser = RouteContext::fromRequest($request)->getRouteParser();
 
@@ -158,7 +160,8 @@ $app->post("/urls", function ($request, $response) use ($pdo, $router) {
 })->setName("urls.post");
 
 // POST Проверки
-$app->post("/urls/{url_id}/checks", function ($request, $response, $args) use ($pdo) {
+$app->post("/urls/{url_id}/checks", function ($request, $response, $args) {
+    $pdo = Connection::get()->connect();
     $tableUrls = new PostgreSQLCreateTable($pdo);
     $url = $tableUrls->getUrl($args["url_id"])["name"];
 

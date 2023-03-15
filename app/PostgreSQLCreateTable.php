@@ -4,9 +4,9 @@ namespace PostgreSQLTutorial;
 
 class PostgreSQLCreateTable
 {
-    private $pdo;
+    private \PDO $pdo;
 
-    public function __construct($pdo)
+    public function __construct(\PDO $pdo)
     {
         $this->pdo = $pdo;
     }
@@ -34,13 +34,13 @@ class PostgreSQLCreateTable
         return $this;
     }
 
-    public function deleteTable($table)
+   /* public function deleteTable($table)
     {
         $sql = "DROP TABLE {$table};";
         $this->pdo->exec($sql);
 
         return $this;
-    }
+    }*/
 
     public function deleteAllTable()
     {
@@ -51,7 +51,7 @@ class PostgreSQLCreateTable
         return $this;
     }
 
-    public function addUrl($url)
+    public function addUrl(array $url)
     {
         $sql = 'INSERT INTO urls 
 	(name, created_at) 
@@ -82,20 +82,20 @@ class PostgreSQLCreateTable
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
-    public function getUrl($id)
+    public function getUrl(int $id)
     {
         $sql = "SELECT * FROM urls WHERE id = {$id};";
         $stmt = $this->pdo->query($sql);
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         return $result;
     }
-    public function seorchUrlName($name)
+    public function seorchUrlName(string $name)
     {
         $sql = "SELECT * FROM urls WHERE name = '{$name}';";
         $stmt = $this->pdo->query($sql);
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
-    public function addChek($data)
+    public function addChek(array $data)
     {
         $sql = 'INSERT INTO url_checks 
 	(url_id, created_at, h1, title, description,status_code) 
@@ -110,7 +110,7 @@ class PostgreSQLCreateTable
         $stmt->execute();
     }
 
-    public function getCheckForCurrentUrl($id)
+    public function getCheckForCurrentUrl(int $id)
     {
         $sql = "SELECT * FROM url_checks WHERE url_id = {$id} ORDER BY id DESC;";
 
