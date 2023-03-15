@@ -89,12 +89,12 @@ class PostgreSQLCreateTable
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         return $result;
     } */
-    public function seorchUrlName(string $name)
+  /*  public function seorchUrlName(string $name)
     {
         $sql = "SELECT * FROM urls WHERE name = '{$name}';";
         $stmt = $this->pdo->query($sql);
         return $stmt->fetch(\PDO::FETCH_ASSOC);
-    }
+    }*/
     public function addChek(array $data)
     {
         $sql = 'INSERT INTO url_checks 
